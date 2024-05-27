@@ -61,8 +61,8 @@
                     <thead class="bg-white text-uppercase">
                         <tr class="ligth ligth-data">
                             <th>No.</th>
+                            <th>@sortablelink('categoryid', 'ID')</th>
                             <th>@sortablelink('name')</th>
-                            <th>@sortablelink('slug')</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -70,14 +70,14 @@
                         @forelse ($categories as $category)
                         <tr>
                             <td>{{ (($categories->currentPage() * 10) - 10) + $loop->iteration  }}</td>
+                            <td>{{ $category->categoryid }}</td>
                             <td>{{ $category->name }}</td>
-                            <td>{{ $category->slug }}</td>
                             <td>
                                 <div class="d-flex align-items-center list-action">
                                     <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"
-                                        href="{{ route('categories.edit', $category->slug) }}""><i class="ri-pencil-line mr-0"></i>
+                                        href="{{ route('categories.edit', $category->categoryid) }}""><i class="ri-pencil-line mr-0"></i>
                                     </a>
-                                    <form action="{{ route('categories.destroy', $category->slug) }}" method="POST" style="margin-bottom: 5px">
+                                    <form action="{{ route('categories.destroy', $category->categoryid) }}" method="POST" style="margin-bottom: 5px">
                                         @method('delete')
                                         @csrf
                                         <button type="submit" class="badge bg-warning mr-2 border-none" onclick="return confirm('Are you sure you want to delete this record?')" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="ri-delete-bin-line mr-0"></i></button>

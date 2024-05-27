@@ -20,8 +20,6 @@ class ProductFactory extends Factory
 
         return [
             'productname' => fake()->word(),
-            'category_id' => fake()->randomElement([1, 2, 3, 4, 5]),
-            'supplier_id' => fake()->randomElement([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
             'stock' => fake()->randomNumber(3),
             'price' => fake()->randomNumber(2),
         ];

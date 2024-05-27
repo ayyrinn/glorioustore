@@ -5,9 +5,8 @@ namespace App\Http\Controllers\Dashboard;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class SupplierController extends Controller
 {
@@ -21,7 +20,7 @@ class SupplierController extends Controller
         if ($row < 1 || $row > 100) {
             abort(400, 'The per-page parameter must be an integer between 1 and 100.');
         }
-
+        
         return view('suppliers.index', [
             'suppliers' => Supplier::filter(request(['search']))->sortable()->paginate($row)->appends(request()->query()),
         ]);
@@ -32,8 +31,7 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        return view('suppliers.create', [
-        ]);
+        return view('suppliers.create');
     }
 
     /**
@@ -41,33 +39,23 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
+        $supplierid = IdGenerator::generate([
+            'table' => 'suppliers',
+            'field' => 'supplierid',
+            'length' => 5,
+            'prefix' => 'SP'
+        ]);
+
         $rules = [
-            'photo' => 'image|file|max:1024',
-            'name' => 'required|string|max:50',
-            'email' => 'required|email|max:50|unique:suppliers,email',
-            'phone' => 'required|string|max:15|unique:suppliers,phone',
-            'shopname' => 'required|string|max:50',
-            'type' => 'required|string|max:25',
-            'account_holder' => 'max:50',
-            'account_number' => 'max:25',
-            'bank_name' => 'max:25',
-            'bank_branch' => 'max:50',
-            'city' => 'required|string|max:50',
-            'address' => 'required|string|max:100',
+            'supname' => 'required|string|max:255',
+            'supaddress' => 'required|string|max:255',
+            'supnumber' => 'required|string|max:15',
         ];
 
         $validatedData = $request->validate($rules);
 
-        /**
-         * Handle upload image with Storage.
-         */
-        if ($file = $request->file('photo')) {
-            $fileName = hexdec(uniqid()).'.'.$file->getClientOriginalExtension();
-            $path = 'public/suppliers/';
-
-            $file->storeAs($path, $fileName);
-            $validatedData['photo'] = $fileName;
-        }
+        // save supplier code value
+        $validatedData['supplierid'] = $supplierid;
 
         Supplier::create($validatedData);
 
@@ -100,41 +88,14 @@ class SupplierController extends Controller
     public function update(Request $request, Supplier $supplier)
     {
         $rules = [
-            'photo' => 'image|file|max:1024',
-            'name' => 'required|string|max:50',
-            'email' => 'required|email|max:50|unique:suppliers,email,'.$supplier->id,
-            'phone' => 'required|string|max:15|unique:suppliers,phone,'.$supplier->id,
-            'shopname' => 'required|string|max:50',
-            'type' => 'required|string|max:25',
-            'account_holder' => 'max:50',
-            'account_number' => 'max:25',
-            'bank_name' => 'max:25',
-            'bank_branch' => 'max:50',
-            'city' => 'required|string|max:50',
-            'address' => 'required|string|max:100',
+            'supname' => 'required|string|max:255',
+            'supaddress' => 'required|string|max:255',
+            'supnumber' => 'required|string|max:15',
         ];
 
         $validatedData = $request->validate($rules);
 
-        /**
-         * Handle upload image with Storage.
-         */
-        if ($file = $request->file('photo')) {
-            $fileName = hexdec(uniqid()).'.'.$file->getClientOriginalExtension();
-            $path = 'public/suppliers/';
-
-            /**
-             * Delete photo if exists.
-             */
-            if($supplier->photo){
-                Storage::delete($path . $supplier->photo);
-            }
-
-            $file->storeAs($path, $fileName);
-            $validatedData['photo'] = $fileName;
-        }
-
-        Supplier::where('id', $supplier->id)->update($validatedData);
+        Supplier::where('supplierid', $supplier->supplierid)->update($validatedData);
 
         return Redirect::route('suppliers.index')->with('success', 'Supplier has been updated!');
     }
@@ -144,14 +105,7 @@ class SupplierController extends Controller
      */
     public function destroy(Supplier $supplier)
     {
-        /**
-         * Delete photo if exists.
-         */
-        if($supplier->photo){
-            Storage::delete('public/suppliers/' . $supplier->photo);
-        }
-
-        Supplier::destroy($supplier->id);
+        Supplier::destroy($supplier->supplierid);
 
         return Redirect::route('suppliers.index')->with('success', 'Supplier has been deleted!');
     }

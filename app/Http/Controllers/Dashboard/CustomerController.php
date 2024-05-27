@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class CustomerController extends Controller
 {
@@ -21,7 +22,7 @@ class CustomerController extends Controller
         if ($row < 1 || $row > 100) {
             abort(400, 'The per-page parameter must be an integer between 1 and 100.');
         }
-
+        
         return view('customers.index', [
             'customers' => Customer::filter(request(['search']))->sortable()->paginate($row)->appends(request()->query()),
         ]);
@@ -40,21 +41,27 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+        $customerid = IdGenerator::generate([
+            'table' => 'customers',
+            'field' => 'customerid',
+            'length' => 7,
+            'prefix' => 'CU'
+        ]);
+
         $rules = [
             'photo' => 'image|file|max:1024',
-            'name' => 'required|string|max:50',
-            'email' => 'required|email|max:50|unique:customers,email',
-            'phone' => 'required|string|max:15|unique:customers,phone',
-            'shopname' => 'required|string|max:50',
-            'account_holder' => 'max:50',
-            'account_number' => 'max:25',
-            'bank_name' => 'max:25',
-            'bank_branch' => 'max:50',
-            'city' => 'required|string|max:50',
-            'address' => 'required|string|max:100',
+            'custname' => 'required|string|max:255',
+            'custemail' => 'required|email|max:255',
+            'custnum' => 'required|string|max:15|unique:customers,custnum',
+            'custgender' => 'nullable|string|max:1',
+            'points' => 'required|integer',
+            'custaddress' => 'required|string|max:255',
         ];
 
         $validatedData = $request->validate($rules);
+
+        // save customer code value
+        $validatedData['customerid'] = $customerid;
 
         /**
          * Handle upload image with Storage.
@@ -99,16 +106,12 @@ class CustomerController extends Controller
     {
         $rules = [
             'photo' => 'image|file|max:1024',
-            'name' => 'required|string|max:50',
-            'email' => 'required|email|max:50|unique:customers,email,'.$customer->id,
-            'phone' => 'required|string|max:15|unique:customers,phone,'.$customer->id,
-            'shopname' => 'required|string|max:50',
-            'account_holder' => 'max:50',
-            'account_number' => 'max:25',
-            'bank_name' => 'max:25',
-            'bank_branch' => 'max:50',
-            'city' => 'required|string|max:50',
-            'address' => 'required|string|max:100',
+            'custname' => 'required|string|max:255',
+            'custemail' => 'required|email|max:255',
+            'custnum' => 'required|string|max:15|unique:customers,custnum,'.$customer->id,
+            'custgender' => 'nullable|string|max:1',
+            'points' => 'required|integer',
+            'custaddress' => 'required|string|max:255',
         ];
 
         $validatedData = $request->validate($rules);

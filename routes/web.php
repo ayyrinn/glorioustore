@@ -16,6 +16,7 @@ use App\Http\Controllers\Dashboard\OrderController;
 use App\Http\Controllers\Dashboard\PosController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
+use App\Http\Controllers\CustomerDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,26 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// // CUSTOMER DASHBOARD
+// Route::middleware(['auth', 'role:customer'])->group(function () {
+//     Route::get('/customer/dashboard', [CustomerDashboardController::class, 'index'])->name('customer.dashboard');
+
+//     // DEFAULT DASHBOARD
+//     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// });
+
+// // DEFAULT PROFILE ROUTES
+// Route::middleware('auth')->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+//     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::get('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
+// });
+
+// CUSTOMER DASHBOARD
+//Route::middleware(['auth', 'role:customer'])->group(function () {
+  //  Route::get('/customer/dashboard', [CustomerDashboardController::class, 'index'])->name('customer.dashboard');
+//});
 
 // DEFAULT DASHBOARD & PROFILE
 Route::middleware('auth')->group(function () {

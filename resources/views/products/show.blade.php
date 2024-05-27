@@ -5,21 +5,11 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <div class="header-title">
-                        <h4 class="card-title">Barcode</h4>
-                    </div>
-                </div>
-
                 <div class="card-body">
                     <div class=" row align-items-center">
                         <div class="form-group col-md-6">
                             <label>Product ID</label>
                             <input type="text" class="form-control bg-white" value="{{  $product->productid }}" readonly>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>Product Barcode</label>
-                            {!! $barcode !!}
                         </div>
                     </div>
                     <!-- end: Show Data -->
@@ -55,10 +45,6 @@
                         <div class="form-group col-md-6">
                             <label>Category</label>
                             <input type="text" class="form-control bg-white" value="{{  $product->category->name }}" readonly>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>Supplier</label>
-                            <input type="text" class="form-control bg-white" value="{{  $product->supplier->name }}" readonly>
                         </div>
                         <div class="form-group col-md-6">
                             <label>Stock</label>

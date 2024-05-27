@@ -2,45 +2,58 @@
 
 namespace App\Models;
 
-use Kyslik\ColumnSortable\Sortable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable;
 
 class Supplier extends Model
 {
     use HasFactory, Sortable;
 
+    public $incrementing = false;
+    protected $primaryKey = 'supplierid';
+    protected $keyType = 'string';
+
     protected $fillable = [
-        'name',
-        'email',
-        'phone',
-        'address',
-        'shopname',
-        'photo',
-        'type',
-        'account_holder',
-        'account_number',
-        'bank_name',
-        'bank_branch',
-        'city',
-    ];
-    public $sortable = [
-        'name',
-        'email',
-        'phone',
-        'shopname',
-        'type',
-        'city',
+        'supplierid',
+        'supname',
+        'supaddress',
+        'supnumber',
     ];
 
-    protected $guarded = [
-        'id',
+    protected $sortable = [
+        'supname',
+        'supaddress',
+        'supnumber',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->supplierid)) {
+                $model->supplierid = static::generateSupplierId();
+            }
+        });
+    }
 
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? false, function ($query, $search) {
-            return $query->where('name', 'like', '%' . $search . '%')->orWhere('shopname', 'like', '%' . $search . '%');
+            return $query->where('name', 'like', '%' . $search . '%');
         });
+    }
+
+    public static function generateSupplierId()
+    {
+        $lastSupplier = static::latest('supplierid')->first();
+        if (!$lastSupplier) {
+            $number = 1;
+        } else {
+            $number = intval(substr($lastSupplier->supplierid, 2)) + 1;
+        }
+
+        return 'SP' . str_pad($number, 5, '0', STR_PAD_LEFT);
     }
 }

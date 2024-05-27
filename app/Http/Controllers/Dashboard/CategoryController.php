@@ -6,6 +6,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class CategoryController extends Controller
 {
@@ -41,12 +42,20 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $categoryid = IdGenerator::generate([
+            'table' => 'categories',
+            'field' => 'categoryid',
+            'length' => 5,
+            'prefix' => 'TY'
+        ]);
+
         $rules = [
-            'name' => 'required|unique:categories,name',
-            'slug' => 'required|unique:categories,slug|alpha_dash',
+            'name' => 'categoryrequired|string|max:255',
         ];
 
         $validatedData = $request->validate($rules);
+
+        $validatedData['categoryid'] = $categoryid;
 
         Category::create($validatedData);
 
@@ -58,7 +67,9 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        return view('categories.show', [
+            'category' => $category,
+        ]);
     }
 
     /**
@@ -77,13 +88,12 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $rules = [
-            'name' => 'required|unique:categories,name,'.$category->id,
-            'slug' => 'required|alpha_dash|unique:categories,slug,'.$category->id,
+            'name' => 'categoryrequired|string|max:255'.$category->id,
         ];
 
         $validatedData = $request->validate($rules);
 
-        Category::where('slug', $category->slug)->update($validatedData);
+        Category::where('id', $category->id)->update($validatedData);
 
         return Redirect::route('categories.index')->with('success', 'Category has been updated!');
     }
@@ -93,7 +103,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        Category::destroy($category->slug);
+        Category::destroy($category->id);
 
         return Redirect::route('categories.index')->with('success', 'Category has been deleted!');
     }

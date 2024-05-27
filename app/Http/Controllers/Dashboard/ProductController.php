@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Dashboard;
 use Exception;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
@@ -32,7 +31,7 @@ class ProductController extends Controller
         }
 
         return view('products.index', [
-            'products' => Product::with(['category', 'supplier'])
+            'products' => Product::with(['category'])
                 ->filter(request(['search']))
                 ->sortable()
                 ->paginate($row)
@@ -47,7 +46,6 @@ class ProductController extends Controller
     {
         return view('products.create', [
             'categories' => Category::all(),
-            'suppliers' => Supplier::all(),
         ]);
     }
 
@@ -66,8 +64,7 @@ class ProductController extends Controller
         $rules = [
             'product_image' => 'image|file|max:1024',
             'productname' => 'required|string',
-            'category_id' => 'required|integer',
-            'supplier_id' => 'required|integer',
+            'categoryid' => 'required|string',
             'stock' => 'required|integer',
             'price' => 'required|integer',
             'description' => 'nullable|string|max:250',
@@ -99,14 +96,8 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        // Barcode Generator
-        $generator = new BarcodeGeneratorHTML();
-
-        $barcode = $generator->getBarcode($product->productid, $generator::TYPE_CODE_128);
-
         return view('products.show', [
             'product' => $product,
-            'barcode' => $barcode,
         ]);
     }
 
@@ -117,7 +108,6 @@ class ProductController extends Controller
     {
         return view('products.edit', [
             'categories' => Category::all(),
-            'suppliers' => Supplier::all(),
             'product' => $product
         ]);
     }
@@ -130,8 +120,7 @@ class ProductController extends Controller
         $rules = [
             'product_image' => 'image|file|max:1024',
             'productname' => 'required|string',
-            'category_id' => 'required|integer',
-            'supplier_id' => 'required|integer',
+            'categoryid' => 'required|string',
             'stock' => 'required|integer',
             'price' => 'required|integer',
             'description' => 'nullable|string|max:250',
@@ -207,13 +196,12 @@ class ProductController extends Controller
             foreach ( $row_range as $row ) {
                 $data[] = [
                     'productname' => $sheet->getCell( 'A' . $row )->getValue(),
-                    'category_id' => $sheet->getCell( 'B' . $row )->getValue(),
-                    'supplier_id' => $sheet->getCell( 'C' . $row )->getValue(),
-                    'productid' => $sheet->getCell( 'D' . $row )->getValue(),
-                    'stock' => $sheet->getCell( 'E' . $row )->getValue(),
-                    'product_image' => $sheet->getCell( 'F' . $row )->getValue(),
-                    'price' =>$sheet->getCell( 'G' . $row )->getValue(),
-                    'description' =>$sheet->getCell( 'H' . $row )->getValue(),
+                    'categoryid' => $sheet->getCell( 'B' . $row )->getValue(),
+                    'productid' => $sheet->getCell( 'C' . $row )->getValue(),
+                    'stock' => $sheet->getCell( 'D' . $row )->getValue(),
+                    'product_image' => $sheet->getCell( 'E' . $row )->getValue(),
+                    'price' =>$sheet->getCell( 'F' . $row )->getValue(),
+                    'description' =>$sheet->getCell( 'G' . $row )->getValue(),
                 ];
                 $startcount++;
             }
@@ -257,7 +245,6 @@ class ProductController extends Controller
         $product_array [] = array(
             'Product Name',
             'Category Id',
-            'Supplier Id',
             'Product Id',
             'Stock',
             'Product Image',
@@ -268,8 +255,7 @@ class ProductController extends Controller
         {
             $product_array[] = array(
                 'Product Name' => $product->productname,
-                'Category Id' => $product->category_id,
-                'Supplier Id' => $product->supplier_id,
+                'Category Id' => $product->categoryid,
                 'Product Id' => $product->productid,
                 'Stock' => $product->stock,
                 'Product Image' => $product->product_image,

@@ -85,7 +85,7 @@
                                 <img class="avatar-60 rounded" src="{{ $product->product_image ? asset('storage/products/'.$product->product_image) : asset('assets/images/product/default.webp') }}">
                             </td>
                             <td>{{ $product->productname }}</td>
-                            <td>{{ $product->category->name }}</td>
+                            <td>{{ optional($product->category)->name ?? 'No category' }}</td>
                             <td>Rp{{ $product->price }}</td>
                             <td>{{ $product->stock }}</td>
                             <td>
@@ -102,15 +102,15 @@
                             </td>
 
                             <td>
-                                <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="margin-bottom: 5px">
+                                <form action="{{ route('products.destroy', $product->productid) }}" method="POST" style="margin-bottom: 5px">
                                     @method('delete')
                                     @csrf
                                     <div class="d-flex align-items-center list-action">
                                         <a class="btn btn-info mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="View"
-                                            href="{{ route('products.show', $product->id) }}"><i class="ri-eye-line mr-0"></i>
+                                            href="{{ route('products.show', $product->productid) }}"><i class="ri-eye-line mr-0"></i>
                                         </a>
                                         <a class="btn btn-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"
-                                            href="{{ route('products.edit', $product->id) }}""><i class="ri-pencil-line mr-0"></i>
+                                            href="{{ route('products.edit', $product->productid) }}""><i class="ri-pencil-line mr-0"></i>
                                         </a>
                                             <button type="submit" class="btn btn-warning mr-2 border-none" onclick="return confirm('Are you sure you want to delete this record?')" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="ri-delete-bin-line mr-0"></i></button>
                                     </div>

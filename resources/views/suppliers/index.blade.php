@@ -61,12 +61,10 @@
                     <thead class="bg-white text-uppercase">
                         <tr class="ligth ligth-data">
                             <th>No.</th>
-                            <th>Photo</th>
-                            <th>@sortablelink('name')</th>
-                            <th>@sortablelink('email')</th>
-                            <th>@sortablelink('phone')</th>
-                            <th>@sortablelink('shopname')</th>
-                            <th>@sortablelink('type')</th>
+                            <th>@sortablelink('supplierid', 'ID')</th>
+                            <th>@sortablelink('supname', 'Name')</th>
+                            <th>@sortablelink('supnumber', 'Phone')</th>
+                            <th>@sortablelink('supaddress', 'Address')</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -74,23 +72,19 @@
                         @foreach ($suppliers as $supplier)
                         <tr>
                             <td>{{ (($suppliers->currentPage() * 10) - 10) + $loop->iteration  }}</td>
-                            <td>
-                                <img class="avatar-60 rounded" src="{{ $supplier->photo ? asset('storage/suppliers/'.$supplier->photo) : asset('assets/images/user/1.png') }}">
-                            </td>
-                            <td>{{ $supplier->name }}</td>
-                            <td>{{ $supplier->email }}</td>
-                            <td>{{ $supplier->phone }}</td>
-                            <td>{{ $supplier->shopname }}</td>
-                            <td>{{ $supplier->type }}</td>
+                            <td>{{ $supplier->supplierid }}</td>
+                            <td>{{ $supplier->supname }}</td>
+                            <td>{{ $supplier->supnumber }}</td>
+                            <td>{{ $supplier->supaddress }}</td>
                             <td>
                                 <div class="d-flex align-items-center list-action">
                                     <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="View"
-                                        href="{{ route('suppliers.show', $supplier->id) }}"><i class="ri-eye-line mr-0"></i>
+                                        href="{{ route('suppliers.show', $supplier->supplierid) }}"><i class="ri-eye-line mr-0"></i>
                                     </a>
                                     <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"
-                                        href="{{ route('suppliers.edit', $supplier->id) }}""><i class="ri-pencil-line mr-0"></i>
+                                        href="{{ route('suppliers.edit', $supplier->supplierid) }}""><i class="ri-pencil-line mr-0"></i>
                                     </a>
-                                    <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" style="margin-bottom: 5px">
+                                    <form action="{{ route('suppliers.destroy', $supplier->supplierid) }}" method="POST" style="margin-bottom: 5px">
                                         @method('delete')
                                         @csrf
                                         <button type="submit" class="badge bg-warning mr-2 border-none" onclick="return confirm('Are you sure you want to delete this record?')" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="ri-delete-bin-line mr-0"></i></button>

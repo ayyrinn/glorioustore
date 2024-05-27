@@ -51,28 +51,14 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="category_id">Category <span class="text-danger">*</span></label>
-                                <select class="form-control" name="category_id" required>
+                                <label for="categoryid">Category <span class="text-danger">*</span></label>
+                                <select class="form-control" name="categoryid" required>
                                     <option selected="" disabled>-- Select Category --</option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                        <option value="{{ $category->categoryid }}" {{ old('categoryid') == $category->categoryid ? 'selected' : '' }}>{{ $category->name }}</option>
                                     @endforeach
                                 </select>
-                                @error('category_id')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="supplier_id">Supplier <span class="text-danger">*</span></label>
-                                <select class="form-control" name="supplier_id" required>
-                                    <option selected="" disabled>-- Select Supplier --</option>
-                                    @foreach ($suppliers as $supplier)
-                                        <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }} }}>{{ $supplier->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('supplier_id')
+                                @error('categoryid')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>

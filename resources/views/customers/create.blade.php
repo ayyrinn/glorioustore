@@ -39,100 +39,62 @@
                             </div>
                         </div>
                         <!-- end: Input Image -->
+
                         <!-- begin: Input Data -->
-                        <div class=" row align-items-center">
+                        <div class="row align-items-center">
                             <div class="form-group col-md-6">
-                                <label for="name">Customer Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
-                                @error('name')
+                                <label for="custname">Customer Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control @error('custname') is-invalid @enderror" id="custname" name="custname" value="{{ old('custname') }}" required>
+                                @error('custname')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="shopname">Shop Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('shopname') is-invalid @enderror" id="shopname" name="shopname" value="{{ old('shopname') }}" required>
-                                @error('shopname')
+                                <label for="custname">Customer Email <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control @error('custemail') is-invalid @enderror" id="custemail" name="custemail" value="{{ old('custemail') }}" required>
+                                @error('custemail')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="email">Customer Email <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required>
-                                @error('email')
+                                <label for="custnum">Customer Number <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control @error('custnum') is-invalid @enderror" id="custnum" name="custnum" value="{{ old('custnum') }}" required>
+                                @error('custnum')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="phone">Customer Phone <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" required>
-                                @error('phone')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="account_holder">Account Holder</label>
-                                <input type="text" class="form-control @error('account_holder') is-invalid @enderror" id="account_holder" name="account_holder" value="{{ old('account_holder') }}">
-                                @error('account_holder')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="bank_name">Bank Name</label>
-                                <select class="form-control @error('bank_name') is-invalid @enderror" name="bank_name">
-                                    <option value="">Select Year..</option>
-                                    <option value="BRI">BRI</option>
-                                    <option value="BNI">BNI</option>
-                                    <option value="BCA">BCA</option>
-                                    <option value="BSI">BSI</option>
-                                    <option value="Mandiri">Mandiri</option>
+                                <label for="custgender">Customer Gender</label>
+                                <select class="form-control @error('custgender') is-invalid @enderror" id="custgender" name="custgender">
+                                    <option value="">Select Gender</option>
+                                    <option value="M" {{ old('custgender') == 'M' ? 'selected' : '' }}>Male</option>
+                                    <option value="F" {{ old('custgender') == 'F' ? 'selected' : '' }}>Female</option>
                                 </select>
-                                @error('bank_name')
+                                @error('custgender')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="account_number">Account Number</label>
-                                <input type="text" class="form-control @error('account_number') is-invalid @enderror" id="account_number" name="account_number" value="{{ old('account_number') }}">
-                                @error('account_number')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="bank_branch">Bank Branch</label>
-                                <input type="text" class="form-control @error('bank_branch') is-invalid @enderror" id="bank_branch" name="bank_branch" value="{{ old('bank_branch') }}">
-                                @error('bank_branch')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="city">Customer City <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('city') is-invalid @enderror" id="city" name="city" value="{{ old('city') }}" required>
-                                @error('city')
+                                <label for="points">Points <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control @error('points') is-invalid @enderror" id="points" name="points" value="{{ old('points') }}" required>
+                                @error('points')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-12">
-                                <label for="address">Customer Address <span class="text-danger">*</span></label>
-                                <textarea class="form-control @error('address') is-invalid @enderror" name="address" required>{{ old('address') }}</textarea>
-                                @error('address')
+                                <label for="custaddress">Customer Address <span class="text-danger">*</span></label>
+                                <textarea class="form-control @error('custaddress') is-invalid @enderror" id="custaddress" name="custaddress" required>{{ old('custaddress') }}</textarea>
+                                @error('custaddress')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
@@ -140,6 +102,7 @@
                             </div>
                         </div>
                         <!-- end: Input Data -->
+
                         <div class="mt-2">
                             <button type="submit" class="btn btn-primary mr-2">Save</button>
                             <a class="btn bg-danger" href="{{ route('customers.index') }}">Cancel</a>
@@ -154,3 +117,17 @@
 
 @include('components.preview-img-form')
 @endsection
+
+<script>
+function previewImage() {
+    const image = document.querySelector('#image');
+    const imgPreview = document.querySelector('#image-preview');
+
+    const oFReader = new FileReader();
+    oFReader.readAsDataURL(image.files[0]);
+
+    oFReader.onload = function(oFREvent) {
+        imgPreview.src = oFREvent.target.result;
+    };
+}
+</script>

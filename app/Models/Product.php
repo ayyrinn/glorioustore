@@ -10,10 +10,14 @@ class Product extends Model
 {
     use HasFactory, Sortable;
 
+    public $incrementing = false;
+    protected $primaryKey = 'productid';
+    protected $keyType = 'string';
+
     protected $fillable = [
+        'productid',
         'productname',
-        'category_id',
-        'supplier_id',
+        'categoryid',
         'productid',
         'stock',
         'product_image',
@@ -27,27 +31,41 @@ class Product extends Model
         'stocks',
     ];
 
-    protected $guarded = [
-        'id',
-    ];
-
     protected $with = [
         'category',
-        'supplier'
     ];
 
     public function category(){
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(Category::class, 'categoryid');
     }
 
-    public function supplier(){
-        return $this->belongsTo(Supplier::class, 'supplier_id');
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->productid)) {
+                $model->productid = static::generateProductId();
+            }
+        });
     }
 
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? false, function ($query, $search) {
-            return $query->where('product_name', 'like', '%' . $search . '%');
+            return $query->where('productname', 'like', '%' . $search . '%');
         });
+    }
+
+    public static function generateProductId()
+    {
+        $lastProduct = static::latest('productid')->first();
+        if (!$lastProduct) {
+            $number = 1;
+        } else {
+            $number = intval(substr($lastProduct->productid, 2)) + 1;
+        }
+
+        return 'PR' . str_pad($number, 7, '0', STR_PAD_LEFT);
     }
 }

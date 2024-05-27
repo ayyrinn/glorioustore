@@ -10,19 +10,29 @@ class Category extends Model
 {
     use HasFactory, Sortable;
 
+    public $incrementing = false;
+    protected $primaryKey = 'categoryid';
+    protected $keyType = 'string';
+
     protected $fillable = [
+        'categoryid',
         'name',
-        'slug',
     ];
 
     protected $sortable = [
         'name',
-        'slug',
     ];
 
-    protected $guarded = [
-        'id',
-    ];
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->categoryid)) {
+                $model->categoryid = static::generateCategoryId();
+            }
+        });
+    }
 
     public function scopeFilter($query, array $filters)
     {
@@ -31,8 +41,15 @@ class Category extends Model
         });
     }
 
-    public function getRouteKeyName()
+    public static function generateCategoryId()
     {
-        return 'slug';
+        $lastCategory = static::latest('categoryid')->first();
+        if (!$lastCategory) {
+            $number = 1;
+        } else {
+            $number = intval(substr($lastCategory->categoryid, 2)) + 1;
+        }
+
+        return 'TY' . str_pad($number, 5, '0', STR_PAD_LEFT);
     }
 }

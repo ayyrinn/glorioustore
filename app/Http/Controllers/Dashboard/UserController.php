@@ -71,6 +71,8 @@ class UserController extends Controller
 
         if($request->role) {
             $user->assignRole($request->role);
+        } else {
+            $user->assignRole('customer');
         }
 
         return Redirect::route('users.index')->with('success', 'New User has been created!');
