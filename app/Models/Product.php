@@ -5,6 +5,7 @@ namespace App\Models;
 use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\TransactionDetails;
 
 class Product extends Model
 {
@@ -27,8 +28,8 @@ class Product extends Model
 
     public $sortable = [
         'name',
-        'prices',
-        'stocks',
+        'price',
+        'stock',
     ];
 
     protected $with = [
@@ -67,5 +68,27 @@ class Product extends Model
         }
 
         return 'PR' . str_pad($number, 7, '0', STR_PAD_LEFT);
+    }
+
+    public function transactionDetails()
+    {
+        return $this->hasMany(TransactionDetails::class, 'productid', 'productid');
+    }
+
+    public function scopeTopSold($query, $period)
+    {
+        return $query->withCount(['transactionDetails as quantity_sold' => function ($query) use ($period) {
+            $query->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
+                ->when($period == 'year', function ($query) {
+                    $query->selectRaw('YEAR(transactions.date) as year');
+                })
+                ->when($period == 'month', function ($query) {
+                    $query->selectRaw('YEAR(transactions.date) as year, MONTH(transactions.date) as month');
+                })
+                ->when($period == 'week', function ($query) {
+                    $query->selectRaw('YEAR(transactions.date) as year, WEEK(transactions.date) as week');
+                })
+                ->groupBy('product_id');
+        }]);
     }
 }

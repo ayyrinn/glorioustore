@@ -5,10 +5,11 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between">
+                <div class="card-header d-flex justify-content-left">
                     <div class="header-title">
                         <h4 class="card-title">Edit Product</h4>
                     </div>
+                    <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#addStockModal">Add Stock</button>
                 </div>
 
                 <div class="card-body">
@@ -104,7 +105,41 @@
         </div>
     </div>
     <!-- Page end  -->
+    <!-- Add Stock Modal -->
+    <!-- Add Stock Modal -->
+    <div class="modal fade" id="addStockModal" tabindex="-1" role="dialog" aria-labelledby="addStockModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addStockModalLabel">Add Stock to <span class="text-primary">{{ $product->productname }}</span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                
+                <div class="modal-body">
+                    <form id="addStockForm" action="{{ route('products.addstock') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="productid" value="{{ $product->productid }}">
+                        <div class="form-group">
+                            <label for="addStockQuantity">Quantity to Add</label>
+                            <input type="number" class="form-control" id="addStockQuantity" name="stock" min="1" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveAddStock">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<script>
+    document.getElementById('saveAddStock').addEventListener('click', function() {
+        document.getElementById('addStockForm').submit();
+    });
+</script>
 
 @include('components.preview-img-form')
 @endsection

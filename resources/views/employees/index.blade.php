@@ -15,8 +15,6 @@
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                 <div>
                     <h4 class="mb-3">Employee List</h4>
-                    <p class="mb-0">A employee dashboard lets you easily gather and visualize employee data from optimizing <br>
-                        the employee experience, ensuring employee retention. </p>
                 </div>
                 <div>
                 <a href="{{ route('employees.create') }}" class="btn btn-primary add-list"><i class="fa-solid fa-plus mr-3"></i>Add Employee</a>
@@ -26,12 +24,12 @@
         </div>
 
         <div class="col-lg-12">
-            <form action="{{ route('employees.index') }}" method="get">
+            <form id="searchForm" action="{{ route('employees.index') }}" method="get">
                 <div class="d-flex flex-wrap align-items-center justify-content-between">
                     <div class="form-group row">
                         <label for="row" class="col-sm-3 align-self-center">Row:</label>
                         <div class="col-sm-9">
-                            <select class="form-control" name="row">
+                            <select id="row" class="form-control" name="row">
                                 <option value="10" @if(request('row') == '10')selected="selected"@endif>10</option>
                                 <option value="25" @if(request('row') == '25')selected="selected"@endif>25</option>
                                 <option value="50" @if(request('row') == '50')selected="selected"@endif>50</option>
@@ -63,6 +61,7 @@
                         <tr class="ligth ligth-data">
                             <th>No.</th>
                             <th>Photo</th>
+                            <th>@sortablelink('employeeid', 'ID')</th>
                             <th>@sortablelink('name')</th>
                             <th>@sortablelink('email')</th>
                             <th>@sortablelink('phone')</th>
@@ -78,6 +77,7 @@
                             <td>
                                 <img class="avatar-60 rounded" src="{{ $employee->photo ? asset('storage/employees/'.$employee->photo) : asset('assets/images/user/1.png') }}">
                             </td>
+                            <td>{{ $employee->employeeid }}</td>
                             <td>{{ $employee->name }}</td>
                             <td>{{ $employee->email }}</td>
                             <td>{{ $employee->phone }}</td>
@@ -86,12 +86,12 @@
                             <td>
                                 <div class="d-flex align-items-center list-action">
                                     <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="View"
-                                        href="{{ route('employees.show', $employee->id) }}"><i class="ri-eye-line mr-0"></i>
+                                        href="{{ route('employees.show', $employee->employeeid) }}"><i class="ri-eye-line mr-0"></i>
                                     </a>
                                     <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"
-                                        href="{{ route('employees.edit', $employee->id) }}""><i class="ri-pencil-line mr-0"></i>
+                                        href="{{ route('employees.edit', $employee->employeeid) }}""><i class="ri-pencil-line mr-0"></i>
                                     </a>
-                                    <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" style="margin-bottom: 5px">
+                                    <form action="{{ route('employees.destroy', $employee->employeeid) }}" method="POST" style="margin-bottom: 5px">
                                         @method('delete')
                                         @csrf
                                         <button type="submit" class="badge bg-warning mr-2 border-none" onclick="return confirm('Are you sure you want to delete this record?')" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="ri-delete-bin-line mr-0"></i></button>
@@ -130,5 +130,11 @@
     </div>
     <!-- Page end  -->
 </div>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('row').addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
+    });
+</script>
 @endsection

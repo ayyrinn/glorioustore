@@ -15,8 +15,6 @@
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                 <div>
                     <h4 class="mb-3">Role List</h4>
-                    <p class="mb-0">A role dashboard lets you easily gather and visualize role data from optimizing <br>
-                        the role experience, ensuring role retention. </p>
                 </div>
                 <div>
                     <a href="{{ route('role.create') }}" class="btn btn-primary add-list"><i class="fa-solid fa-plus mr-3"></i>Add Role</a>

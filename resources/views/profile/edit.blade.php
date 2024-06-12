@@ -1,4 +1,4 @@
-@extends('dashboard.body.main')
+@extends(auth()->user()->hasRole('Customer') ? 'customerdashboard.body.main' : 'dashboard.body.main')
 
 @section('container')
 <div class="container-fluid">

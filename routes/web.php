@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Controllers\Dashboard\CategoryController;
@@ -8,15 +9,15 @@ use App\Http\Controllers\Dashboard\CustomerController;
 use App\Http\Controllers\Dashboard\EmployeeController;
 use App\Http\Controllers\Dashboard\SupplierController;
 use App\Http\Controllers\Dashboard\DashboardController;
-use App\Http\Controllers\Dashboard\PaySalaryController;
 use App\Http\Controllers\Dashboard\AttendenceController;
-use App\Http\Controllers\Dashboard\AdvanceSalaryController;
 use App\Http\Controllers\Dashboard\DatabaseBackupController;
 use App\Http\Controllers\Dashboard\OrderController;
 use App\Http\Controllers\Dashboard\PosController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
-use App\Http\Controllers\CustomerDashboardController;
+use App\Http\Controllers\Dashboard\TransactionController;
+use App\Http\Controllers\Dashboard\CustomerDashboardController;
+use App\Http\Controllers\Dashboard\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,8 +31,16 @@ use App\Http\Controllers\CustomerDashboardController;
 */
 
 Route::get('/', function () {
+    if (Auth::check()) {
+        if (Auth::user()->hasRole('Admin') || Auth::user()->hasRole('SuperAdmin') || Auth::user()->hasRole('Manager') || Auth::user()->hasRole('Kasir') || Auth::user()->hasRole('Kurir')) {
+            return redirect()->route('dashboard');
+        } else {
+            return redirect()->route('customerdashboard.index');
+        }
+    }
     return view('welcome');
 });
+
 
 // // CUSTOMER DASHBOARD
 // Route::middleware(['auth', 'role:customer'])->group(function () {
@@ -49,15 +58,45 @@ Route::get('/', function () {
 //     Route::get('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
 // });
 
-// CUSTOMER DASHBOARD
-//Route::middleware(['auth', 'role:customer'])->group(function () {
-  //  Route::get('/customer/dashboard', [CustomerDashboardController::class, 'index'])->name('customer.dashboard');
-//});
 
-// DEFAULT DASHBOARD & PROFILE
-Route::middleware('auth')->group(function () {
+// // CUSTOMER DASHBOARD
+// Route::middleware(['permission:customer.dashboard'])->group(function () {
+//     Route::get('/customer/dashboard', [CustomerDashboardController::class, 'index'])->name('customerdashboard.dashboard');
+// });
+//Route::get('/customer/dashboard', [CustomerDashboardController::class, 'index'])->name('customerdashboard.dashboard');
+Route::get('/customer/dashboard/products/{id}', [ProductController::class, 'showDetail'])->name('productdetailcustomer.index');
+Route::get('/customer/dashboard', [CustomerDashboardController::class, 'getProductsByCategory'])->name('customerdashboard.index');
+
+Route::middleware(['auth', 'checkrole:Customer'])->group(function () {
+    Route::get('/customer/keranjang', [CartController::class, 'index'])->name('keranjang.index');
+    Route::post('/customer/keranjang/add', [CartController::class, 'addCart'])->name('keranjang.addCart');
+    Route::put('/customer/keranjang/update/{rowId}', [CartController::class, 'updateCart'])->name('keranjang.updateCart');
+    Route::post('/customer/keranjang/update/{rowId}', [CartController::class, 'updateCart'])->name('keranjang.updateCart');
+    Route::delete('/customer/keranjang/delete/{rowId}', [CartController::class, 'deleteCart'])->name('keranjang.deleteCart');
+    Route::get('/customer/transaksi', [TransactionController::class, 'createOnlineOrder'])->name('transaksi.createOnlineOrder');
+    Route::post('/customer/transaksi/store', [TransactionController::class, 'storeOnlineOrder'])->name('transaksi.storeOnlineOrder');
+    Route::get('/customer/transaksi/pembayaran/{transactionid}', [TransactionController::class, 'payment'])->name('transaksi.payment');
+    Route::post('/customer/transaksi/pembayaran/store', [TransactionController::class, 'storePayment'])->name('transaksi.storePayment');
+    Route::get('/customer/historytransaksi', [TransactionController::class, 'showOrderHistory'])->name('transaksi.showOrderHistory');
+    Route::get('/customer/transaksi/details/{transactionid}', [TransactionController::class, 'transactionOnlineDetails'])->name('transaksi.transactionDetails');
+
+
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
+
+
+});
+
+
+// ADMIN DASHBOARD
+Route::middleware(['auth', 'checkrole:SuperAdmin,Admin,Manager,Kasir,Kurir'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+});
 
+// PROFILE
+Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -86,19 +125,7 @@ Route::middleware(['permission:employee.menu'])->group(function () {
 
 // ====== EMPLOYEE ATTENDENCE ======
 Route::middleware(['permission:attendence.menu'])->group(function () {
-    Route::resource('/employee/attendence', AttendenceController::class)->except(['show', 'update', 'destroy']);
-});
-
-// ====== SALARY EMPLOYEE ======
-Route::middleware(['permission:salary.menu'])->group(function () {
-    // PaySalary
-    Route::resource('/pay-salary', PaySalaryController::class)->except(['show', 'create', 'edit', 'update']);
-    Route::get('/pay-salary/history', [PaySalaryController::class, 'payHistory'])->name('pay-salary.payHistory');
-    Route::get('/pay-salary/history/{id}', [PaySalaryController::class, 'payHistoryDetail'])->name('pay-salary.payHistoryDetail');
-    Route::get('/pay-salary/{id}', [PaySalaryController::class, 'paySalary'])->name('pay-salary.paySalary');
-
-    // Advance Salary
-    Route::resource('/advance-salary', AdvanceSalaryController::class)->except(['show']);
+    Route::resource('/employee/attendence', AttendenceController::class)->except(['update', 'destroy']);
 });
 
 // ====== PRODUCTS ======
@@ -107,6 +134,8 @@ Route::middleware(['permission:product.menu'])->group(function () {
     Route::post('/products/import', [ProductController::class, 'importStore'])->name('products.importStore');
     Route::get('/products/export', [ProductController::class, 'exportData'])->name('products.exportData');
     Route::resource('/products', ProductController::class);
+    Route::post('/products/addstock', [ProductController::class, 'addStock'])->name('products.addstock');
+
 });
 
 // ====== CATEGORY PRODUCTS ======
@@ -123,25 +152,40 @@ Route::middleware(['permission:pos.menu'])->group(function () {
     Route::post('/pos/invoice/create', [PosController::class, 'createInvoice'])->name('pos.createInvoice');
     Route::post('/pos/invoice/print', [PosController::class, 'printInvoice'])->name('pos.printInvoice');
 
-    // Create Order
-    Route::post('/pos/order', [OrderController::class, 'storeOrder'])->name('pos.storeOrder');
+    // Create Transaction
+    Route::post('/pos/order', [TransactionController::class, 'storeTransaction'])->name('pos.storeTransaction');
+});
+
+// ====== TRANSACTIONS ======
+Route::middleware(['permission:transactions.menu'])->group(function () {
+    Route::get('/transactions/offline', [TransactionController::class, 'index'])->name('transaction.index');
+    Route::get('/transactions/offline/details/{transactionid}', [TransactionController::class, 'transactionDetails'])->name('transaction.transactionDetails');
+    Route::get('/transactions/offline/invoice/download/{transactionid}', [TransactionController::class, 'invoiceDownload'])->name('transaction.invoiceDownload');
+    
+    // Online Transaction
+    Route::get('/transactions/online', [TransactionController::class, 'online'])->name('transaction.online');
+    Route::get('/transactions/online/update/{transactionid}', [TransactionController::class, 'editOnline'])->name('transaction.editOnline');
+    Route::post('/transactions/online/update/cashier', [TransactionController::class, 'updateOnlineCashier'])->name('transaction.updateOnlineCashier');
+    Route::post('/transactions/online/update/courier', [TransactionController::class, 'updateOnlineCourier'])->name('transaction.updateOnlineCourier');
+    Route::put('/transactions/online/update/status', [TransactionController::class, 'updateStatusOnline'])->name('transaction.updateStatusOnline');
+    Route::put('/transactions/online/update/cancel', [TransactionController::class, 'cancelStatusOnline'])->name('transaction.cancelStatusOnline');
+    Route::post('/transactions/online/update/send', [TransactionController::class, 'completeOnline'])->name('transaction.completeOnline');
+    // Route::resource('/transactions', TransactionController::class);
 });
 
 // ====== ORDERS ======
 Route::middleware(['permission:orders.menu'])->group(function () {
-    Route::get('/orders/pending', [OrderController::class, 'pendingOrders'])->name('order.pendingOrders');
-    Route::get('/orders/complete', [OrderController::class, 'completeOrders'])->name('order.completeOrders');
-    Route::get('/orders/details/{order_id}', [OrderController::class, 'orderDetails'])->name('order.orderDetails');
+    Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
+    Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+    Route::post('/orders/add', [OrderController::class, 'addCart'])->name('order.addCart');
+    Route::post('/orders/update/{rowId}', [OrderController::class, 'updateCart'])->name('order.updateCart');
+    Route::get('/orders/delete/{rowId}', [OrderController::class, 'deleteCart'])->name('order.deleteCart');
+    Route::post('/orders/invoice/create', [OrderController::class, 'createInvoice'])->name('order.createInvoice');
     Route::put('/orders/update/status', [OrderController::class, 'updateStatus'])->name('order.updateStatus');
-    Route::get('/orders/invoice/download/{order_id}', [OrderController::class, 'invoiceDownload'])->name('order.invoiceDownload');
+    Route::get('/orders/details/{orderid}', [OrderController::class, 'orderDetails'])->name('order.details');
 
-    // Pending Due
-    Route::get('/pending/due', [OrderController::class, 'pendingDue'])->name('order.pendingDue');
-    Route::get('/order/due/{id}', [OrderController::class, 'orderDueAjax'])->name('order.orderDueAjax');
-    Route::post('/update/due', [OrderController::class, 'updateDue'])->name('order.updateDue');
-
-    // Stock Management
-    Route::get('/stock', [OrderController::class, 'stockManage'])->name('order.stockManage');
+    // Create Order
+    Route::post('/orders/order', [OrderController::class, 'storeOrder'])->name('order.storeOrder');
 });
 
 // ====== DATABASE BACKUP ======
@@ -180,3 +224,5 @@ Route::middleware(['permission:roles.menu'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+

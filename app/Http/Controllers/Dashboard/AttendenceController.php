@@ -21,14 +21,20 @@ class AttendenceController extends Controller
             abort(400, 'The per-page parameter must be an integer between 1 and 100.');
         }
 
-        return view('attendence.index', [
-            'attendences' => Attendence::sortable()
-                ->select('date')
-                ->groupBy('date')
-                ->orderBy('date', 'desc')
-                ->paginate($row)
-                ->appends(request()->query()),
-        ]);
+        $attendences = Attendence::sortable()
+        ->select('date')
+        ->groupBy('date')
+        ->orderBy('date', 'desc');
+
+        // Apply additional filters if needed, such as date
+        if (request()->has('date')) {
+            $attendences->whereDate('date', request('date'));
+        }
+
+        // Paginate the results and append query parameters
+        $attendences = $attendences->paginate($row)->appends(request()->query());
+
+        return view('attendence.index', compact('attendences'));
     }
 
     /**
@@ -41,12 +47,21 @@ class AttendenceController extends Controller
         ]);
     }
 
+    public function show(Attendence $attendence)
+    {
+        return view('attendence.show', [
+            'attendences' => Attendence::with(['employee'])->where('date', $attendence->date)->get(),
+            'date' => $attendence->date
+        ]);
+    }
+
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $countEmployee = count($request->employee_id);
+        $countEmployee = count($request->employeeid);
         $rules = [
             'date' => 'required|date_format:Y-m-d|max:10',
         ];
@@ -61,21 +76,13 @@ class AttendenceController extends Controller
             $attend = new Attendence();
 
             $attend->date = $validatedData['date'];
-            $attend->employee_id = $request->employee_id[$i];
+            $attend->employeeid = $request->employeeid[$i];
             $attend->status = $request->$status;
 
             $attend->save();
         }
 
         return Redirect::route('attendence.index')->with('success', 'Attendence has been Created!');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Attendence $attendence)
-    {
-        //
     }
 
     /**

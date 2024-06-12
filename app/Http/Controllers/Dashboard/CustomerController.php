@@ -52,7 +52,7 @@ class CustomerController extends Controller
             'photo' => 'image|file|max:1024',
             'custname' => 'required|string|max:255',
             'custemail' => 'required|email|max:255',
-            'custnum' => 'required|string|max:15|unique:customers,custnum',
+            'custnum' => 'required|string|max:15',
             'custgender' => 'nullable|string|max:1',
             'points' => 'required|integer',
             'custaddress' => 'required|string|max:255',
@@ -76,7 +76,7 @@ class CustomerController extends Controller
 
         Customer::create($validatedData);
 
-        return Redirect::route('customers.index')->with('success', 'Customer has been created!');
+        return Redirect::route('customersdashboard.index')->with('success', 'Customer has been created!');
     }
 
     /**
@@ -108,7 +108,7 @@ class CustomerController extends Controller
             'photo' => 'image|file|max:1024',
             'custname' => 'required|string|max:255',
             'custemail' => 'required|email|max:255',
-            'custnum' => 'required|string|max:15|unique:customers,custnum,'.$customer->id,
+            'custnum' => 'required|string|max:15',
             'custgender' => 'nullable|string|max:1',
             'points' => 'required|integer',
             'custaddress' => 'required|string|max:255',
@@ -134,7 +134,7 @@ class CustomerController extends Controller
             $validatedData['photo'] = $fileName;
         }
 
-        Customer::where('id', $customer->id)->update($validatedData);
+        Customer::where('customerid', $customer->customerid)->update($validatedData);
 
         return Redirect::route('customers.index')->with('success', 'Customer has been updated!');
     }
@@ -151,7 +151,7 @@ class CustomerController extends Controller
             Storage::delete('public/customers/' . $customer->photo);
         }
 
-        Customer::destroy($customer->id);
+        Customer::destroy($customer->customerid);
 
         return Redirect::route('customers.index')->with('success', 'Customer has been deleted!');
     }

@@ -24,6 +24,8 @@ class ProductController extends Controller
      */
     public function index()
     {
+        $products = Product::all();
+        
         $row = (int) request('row', 10);
 
         if ($row < 1 || $row > 100) {
@@ -146,9 +148,23 @@ class ProductController extends Controller
             $validatedData['product_image'] = $fileName;
         }
 
-        Product::where('id', $product->id)->update($validatedData);
+        Product::where('productid', $product->productid)->update($validatedData);
 
         return Redirect::route('products.index')->with('success', 'Product has been updated!');
+    }
+
+    public function addstock(Request $request)
+    {
+        $request->validate([
+            'productid' => 'required|exists:products,productid',
+            'stock' => 'required|integer|min:1',
+        ]);
+
+        $product = Product::find($request->productid);
+        $product->stock += $request->stock;
+        $product->save();
+
+        return Redirect::route('products.index')->with('success', 'Stock added successfully!');
     }
 
     /**
@@ -163,7 +179,7 @@ class ProductController extends Controller
             Storage::delete('public/products/' . $product->product_image);
         }
 
-        Product::destroy($product->id);
+        Product::destroy($product->productid);
 
         return Redirect::route('products.index')->with('success', 'Product has been deleted!');
     }
@@ -240,7 +256,7 @@ class ProductController extends Controller
      * into an Array that will be exported to Excel
      */
     function exportData(){
-        $products = Product::all()->sortByDesc('product_id');
+        $products = Product::all()->sortByDesc('productid');
 
         $product_array [] = array(
             'Product Name',
@@ -259,10 +275,19 @@ class ProductController extends Controller
                 'Product Id' => $product->productid,
                 'Stock' => $product->stock,
                 'Product Image' => $product->product_image,
-                'Price' =>$product->selling_price,
+                'Price' =>$product->price,
             );
         }
 
         $this->ExportExcel($product_array);
+    }
+
+    public function showDetail($id)
+    {
+        // Cari produk berdasarkan id
+        $product = Product::findOrFail($id);
+        
+        // Tampilkan halaman detail produk
+        return view('productdetailcustomer.index', ['product' => $product]);
     }
 }

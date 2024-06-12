@@ -44,12 +44,12 @@
                                             </tr>
                                         </thead>
                                         <tbody class="ligth-body">
-                                            @foreach ($attendences as $attendence)
+                                            @foreach ($attendences as $key => $attendence)
                                             <tr>
-                                                <th scope="row">{{ $key = $loop->iteration  }}</th>
+                                                <td>{{ $key + 1 }}</td>
                                                 <td>{{ $attendence->employee->name}}</td>
                                                 <td>
-                                                    <input type="hidden" name="employee_id[{{ $key }}]" value="{{ $attendence->employee_id }}">
+                                                    <input type="hidden" name="employeeid[{{ $key }}]" value="{{ $attendence->employeeid }}">
                                                     <div class="input-group">
                                                         <div class="input-group justify-content-center">
                                                             <div class="input-group-text">

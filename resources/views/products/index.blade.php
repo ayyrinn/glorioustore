@@ -23,8 +23,6 @@
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                 <div>
                     <h4 class="mb-3">Product List</h4>
-                    <p class="mb-0">A product dashboard lets you easily gather and visualize product data from optimizing <br>
-                        the product experience, ensuring product retention. </p>
                 </div>
                 <div>
                 <a href="{{ route('products.importView') }}" class="btn btn-danger add-list">Import</a>
@@ -35,12 +33,12 @@
         </div>
 
         <div class="col-lg-12">
-            <form action="{{ route('products.index') }}" method="get">
+            <form id="searchForm" action="{{ route('products.index') }}" method="get">
                 <div class="d-flex flex-wrap align-items-center justify-content-between">
                     <div class="form-group row">
                         <label for="row" class="col-sm-3 align-self-center">Row:</label>
                         <div class="col-sm-9">
-                            <select class="form-control" name="row">
+                            <select id="row" class="form-control" name="row">
                                 <option value="10" @if(request('row') == '10')selected="selected"@endif>10</option>
                                 <option value="25" @if(request('row') == '25')selected="selected"@endif>25</option>
                                 <option value="50" @if(request('row') == '50')selected="selected"@endif>50</option>
@@ -69,6 +67,7 @@
                         <tr class="ligth ligth-data">
                             <th>No.</th>
                             <th>Photo</th>
+                            <th>@sortablelink('productid', 'ID')</th>
                             <th>@sortablelink('productname', 'name')</th>
                             <th>@sortablelink('category.name', 'category')</th>
                             <th>@sortablelink('price', 'prices')</th>
@@ -84,9 +83,10 @@
                             <td>
                                 <img class="avatar-60 rounded" src="{{ $product->product_image ? asset('storage/products/'.$product->product_image) : asset('assets/images/product/default.webp') }}">
                             </td>
+                            <td>{{ $product->productid }}</td>
                             <td>{{ $product->productname }}</td>
                             <td>{{ optional($product->category)->name ?? 'No category' }}</td>
-                            <td>Rp{{ $product->price }}</td>
+                            <td> Rp {{ number_format( $product->price , 0, ',', '.') }}</td>
                             <td>{{ $product->stock }}</td>
                             <td>
                                 @php
@@ -154,5 +154,13 @@
     </div>
     <!-- Page end  -->
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('row').addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
+    });
+</script>
 
 @endsection

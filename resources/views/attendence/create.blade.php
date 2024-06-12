@@ -49,19 +49,13 @@
                                                 <th scope="row">{{ $key = $loop->iteration  }}</th>
                                                 <td>{{ $employee->name }}</td>
                                                 <td>
-                                                    <input type="hidden" name="employee_id[{{ $key }}]" value="{{ $employee->id }}">
+                                                    <input type="hidden" name="employeeid[{{ $key }}]" value="{{ $employee->employeeid }}">
                                                     <div class="input-group">
                                                         <div class="input-group justify-content-center">
                                                             <div class="input-group-text">
                                                                 <div class="custom-radio">
                                                                     <input type="radio" id="present{{ $key }}" name="status{{ $key }}" class="custom-control-input position-relative" style="height: 20px" value="present">
                                                                     <label class="custom-control-label" for="present{{ $key }}"> Present </label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="input-group-text mx-2">
-                                                                <div class="custom-radio">
-                                                                    <input type="radio" id="leave{{ $key }}" name="status{{ $key }}" class="custom-control-input position-relative" style="height: 20px" value="leave">
-                                                                    <label class="custom-control-label" for="leave{{ $key }}"> Leave </label>
                                                                 </div>
                                                             </div>
                                                             <div class="input-group-text">

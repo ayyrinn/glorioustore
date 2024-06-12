@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Customer;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -50,6 +51,34 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect()->route('auth.alamat');
+    }
+
+    /**
+     * Handle storing of address information.
+     */
+    public function storeAlamat(Request $request)
+    {
+        $request->validate([
+            'custaddress' => 'required|string|max:255',
+            'custnum' => 'required|string|max:15',
+        ]);
+
+        $user = Auth::user();
+
+        $customer = Customer::firstOrNew(['custemail' => $user->email]);
+        $customer->custname = $user->name;
+        $customer->custaddress = $request->custaddress;
+        $customer->custnum = $request->custnum;
+        $customer->save();
+
+        return redirect()->route('customerdashboard.index')->with('success', 'Profil Anda berhasil diperbarui.');
+    }
+
+    public function showAlamatForm(): View
+    {
+        $user = Auth::user();
+        $customer = Customer::where('custemail', $user->email)->first();
+        return view('auth.alamat', compact('customer'));
     }
 }

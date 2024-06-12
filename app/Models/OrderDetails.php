@@ -9,21 +9,21 @@ class OrderDetails extends Model
 {
     use HasFactory;
 
+    protected $table = 'orderdetails';
+
     protected $fillable = [
-        'order_id',
-        'product_id',
-        'quantity',
-        'unitcost',
-        'total',
+        'orderid',
+        'productid',
+        'qty',
+        'buying_price',
+        'subtotal',
     ];
 
-    protected $guarded = [
-        'id',
-    ];
     protected $with = ['product'];
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'product_id', 'id');
+        return $this->belongsTo(Product::class, 'productid', 'productid');
     }
+    
 }

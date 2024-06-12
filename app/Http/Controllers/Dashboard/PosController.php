@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Dashboard;
 use Carbon\Carbon;
 use App\Models\Product;
 use App\Models\Customer;
+use App\Models\Employee;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
@@ -14,7 +16,6 @@ class PosController extends Controller
 {
     public function index()
     {
-        $todayDate = Carbon::now();
         $row = (int) request('row', 10);
 
         if ($row < 1 || $row > 100) {
@@ -23,8 +24,8 @@ class PosController extends Controller
 
         return view('pos.index', [
             'customers' => Customer::all()->sortBy('name'),
-            'productItem' => Cart::content(),
-            'products' => Product::where('expire_date', '>', $todayDate)->filter(request(['search']))
+            'productItem' => Cart::instance('pos')->content(),
+            'products' => Product::filter(request(['search']))
                 ->sortable()
                 ->paginate($row)
                 ->appends(request()->query()),
@@ -34,22 +35,23 @@ class PosController extends Controller
     public function addCart(Request $request)
     {
         $rules = [
-            'id' => 'required|numeric',
-            'name' => 'required|string',
+            'productid' => 'required|string',
+            'productname' => 'required|string',
             'price' => 'required|numeric',
         ];
 
         $validatedData = $request->validate($rules);
 
-        Cart::add([
-            'id' => $validatedData['id'],
-            'name' => $validatedData['name'],
+        Cart::instance('pos')->add([
+            'id' => $validatedData['productid'],
+            'name' => $validatedData['productname'],
             'qty' => 1,
             'price' => $validatedData['price'],
             'options' => ['size' => 'large']
         ]);
 
         return Redirect::back()->with('success', 'Product has been added!');
+
     }
 
     public function updateCart(Request $request, $rowId)
@@ -60,14 +62,14 @@ class PosController extends Controller
 
         $validatedData = $request->validate($rules);
 
-        Cart::update($rowId, $validatedData['qty']);
+        Cart::instance('pos')->update($rowId, $validatedData['qty']);
 
         return Redirect::back()->with('success', 'Cart has been updated!');
     }
 
     public function deleteCart(String $rowId)
     {
-        Cart::remove($rowId);
+        Cart::instance('pos')->remove($rowId);
 
         return Redirect::back()->with('success', 'Cart has been deleted!');
     }
@@ -75,31 +77,39 @@ class PosController extends Controller
     public function createInvoice(Request $request)
     {
         $rules = [
-            'customer_id' => 'required'
+            'custnum' => 'required|numeric', 
         ];
 
         $validatedData = $request->validate($rules);
-        $customer = Customer::where('id', $validatedData['customer_id'])->first();
-        $content = Cart::content();
+        $customer = Customer::where('custnum', $validatedData['custnum'])->first();
+        $content = Cart::instance('pos')->content();
+
+        // Retrieve the email of the logged-in user
+        $userEmail = Auth::user()->email;
+        $employee = Employee::where('email', $userEmail)->first();
 
         return view('pos.create-invoice', [
             'customer' => $customer,
-            'content' => $content
+            'content' => $content,
+            'employee' => $employee,
         ]);
     }
 
     public function printInvoice(Request $request)
     {
         $rules = [
-            'customer_id' => 'required'
+            'customerid' => 'required|exists:customers,customerid',
         ];
 
         $validatedData = $request->validate($rules);
-        $customer = Customer::where('id', $validatedData['customer_id'])->first();
-        $content = Cart::content();
+        $customer = Customer::where('customerid', $validatedData['customerid'])->first();
+        $userEmail = Auth::user()->email;
+        $employee = Employee::where('email', $userEmail)->first();
+        $content = Cart::instance('pos')->content();
 
         return view('pos.print-invoice', [
             'customer' => $customer,
+            'employee' => $employee,
             'content' => $content
         ]);
     }

@@ -61,6 +61,52 @@
             </div>
         </div>
         <!-- end: Input Data -->
+        <!-- begin: Input Customer Data -->
+        @if(auth()->user()->hasRole('Customer'))
+        <div class="form-group row align-items-center">
+            <div class="form-group col-md-6">
+                <label for="custnum">Number <span class="text-danger">*</span></label>
+                <input type="text" class="form-control @error('custnum') is-invalid @enderror" id="custnum" name="custnum" value="{{ old('custnum', optional($customer)->custnum) }}" required>
+                <script>
+                    // Check if the address is '000', then clear the input box
+                    if ("{{ optional($customer)->custnum }}" === '08') {
+                        document.getElementById('custnum').value = '';
+                    }
+                </script>
+                @error('custnum')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="form-group col-md-6">
+                <label for="custgender">Gender</label>
+                <select class="form-control @error('custgender') is-invalid @enderror" id="custgender" name="custgender">
+                    <option value="">Select Gender</option>
+                    <option value="M" {{ old('custgender', optional($customer)->custgender) == 'M' ? 'selected' : '' }}>Male</option>
+                    <option value="F" {{ old('custgender', optional($customer)->custgender) == 'F' ? 'selected' : '' }}>Female</option>
+                </select>
+                @error('custgender')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="form-group col-md-12">
+                <label for="custaddress">Address <span class="text-danger">*</span></label>
+                <input type="text" class="form-control @error('custaddress') is-invalid @enderror" id="custaddress" name="custaddress" value="{{ old('custaddress', optional($customer)->custaddress) }}" required>
+                <script>
+                    // Check if the address is '000', then clear the input box
+                    if ("{{ optional($customer)->custaddress }}" === '000') {
+                        document.getElementById('custaddress').value = '';
+                    }
+                </script>
+                @error('custaddress')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+                @enderror
+            </div>
+        </div>
+        @endif
+        <!-- end: Input Customer Data -->
+
         <div class="mt-2">
             <button type="submit" class="btn btn-primary mr-2">Update</button>
             <a class="btn bg-danger" href="{{ route('profile') }}">Cancel</a>

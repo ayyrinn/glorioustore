@@ -18,86 +18,7 @@
             </div>
         </div>
 
-        <div class="col-lg-6 col-md-12 mb-3">
-            <table class="table">
-                <thead>
-                    <tr class="ligth">
-                        <th scope="col">Name</th>
-                        <th scope="col">QTY</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">SubTotal</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($productItem as $item)
-                    <tr>
-                        <td>{{ $item->name }}</td>
-                        <td style="min-width: 140px;">
-                            <form action="{{ route('pos.updateCart', $item->rowId) }}" method="POST">
-                                @csrf
-                                <div class="input-group">
-                                    <input type="number" class="form-control" name="qty" required value="{{ old('qty', $item->qty) }}">
-                                    <div class="input-group-append">
-                                        <button type="submit" class="btn btn-success border-none" data-toggle="tooltip" data-placement="top" title="" data-original-title="Sumbit"><i class="fas fa-check"></i></button>
-                                    </div>
-                                </div>
-                            </form>
-                        </td>
-                        <td>{{ $item->price }}</td>
-                        <td>{{ $item->subtotal }}</td>
-                        <td>
-                            <a href="{{ route('pos.deleteCart', $item->rowId) }}" class="btn btn-danger border-none" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa-solid fa-trash mr-0"></i></a>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-            <div class="container row text-center">
-                <div class="form-group col-sm-6">
-                    <p class="h4 text-primary">Quantity: {{ Cart::count() }}</p>
-                </div>
-                <div class="form-group col-sm-6">
-                    <p class="h4 text-primary">Subtotal: {{ Cart::subtotal() }}</p>
-                </div>
-                <div class="form-group col-sm-6">
-                    <p class="h4 text-primary">Vat: {{ Cart::tax() }}</p>
-                </div>
-                <div class="form-group col-sm-6">
-                    <p class="h4 text-primary">Total: {{ Cart::total() }}</p>
-                </div>
-            </div>
-
-            <form action="{{ route('pos.createInvoice') }}" method="POST">
-                @csrf
-                <div class="row mt-3">
-                    <div class="col-md-12">
-                        <div class="input-group">
-                            <select class="form-control" id="customer_id" name="customer_id">
-                                <option selected="" disabled="">-- Select Customer --</option>
-                                @foreach ($customers as $customer)
-                                    <option value="{{ $customer->id }}">{{ $customer->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        @error('customer_id')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                        @enderror
-                    </div>
-                    <div class="col-md-12 mt-4">
-                        <div class="d-flex flex-wrap align-items-center justify-content-center">
-                            <a href="{{ route('customers.create') }}" class="btn btn-primary add-list mx-1">Add Customer</a>
-                            <button type="submit" class="btn btn-success add-list mx-1">Create Invoice</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <div class="col-lg-6 col-md-12">
+        <div class="col-lg-7 col-md-12">
             <div class="card card-block card-stretch card-height">
                 <div class="card-body">
                     <form action="#" method="get">
@@ -134,8 +55,8 @@
                                 <tr class="ligth ligth-data">
                                     <th>No.</th>
                                     <th>Photo</th>
-                                    <th>@sortablelink('product_name', 'name')</th>
-                                    <th>@sortablelink('selling_price', 'price')</th>
+                                    <th>@sortablelink('productname', 'name')</th>
+                                    <th>@sortablelink('price', 'price')</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -146,14 +67,14 @@
                                     <td>
                                         <img class="avatar-60 rounded" src="{{ $product->product_image ? asset('storage/products/'.$product->product_image) : asset('assets/images/product/default.webp') }}">
                                     </td>
-                                    <td>{{ $product->product_name }}</td>
-                                    <td>{{ $product->selling_price }}</td>
+                                    <td>{{ $product->productname }}</td>
+                                    <td>Rp {{ number_format( $product->price , 0, ',', '.') }}</td>
                                     <td>
                                         <form action="{{ route('pos.addCart') }}" method="POST"  style="margin-bottom: 5px">
                                             @csrf
-                                            <input type="hidden" name="id" value="{{ $product->id }}">
-                                            <input type="hidden" name="name" value="{{ $product->product_name }}">
-                                            <input type="hidden" name="price" value="{{ $product->selling_price }}">
+                                            <input type="hidden" name="productid" value="{{ $product->productid }}">
+                                            <input type="hidden" name="productname" value="{{ $product->productname }}">
+                                            <input type="hidden" name="price" value="{{ $product->price }}">
 
                                             <button type="submit" class="btn btn-primary border-none" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add"><i class="far fa-plus mr-0"></i></button>
                                         </form>
@@ -175,6 +96,92 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-lg-5 col-md-12 mb-3">
+            <table class="table">
+                <thead>
+                    <tr class="ligth">
+                        <th scope="col">Name</th>
+                        <th scope="col">QTY</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">SubTotal</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($productItem as $item)
+                    <tr>
+                        <td>{{ $item->name }}</td>
+                        <td style="min-width: 140px;">
+                            <form action="{{ route('pos.updateCart', $item->rowId) }}" method="POST">
+                                @csrf
+                                <div class="input-group">
+                                    <input type="number" class="form-control" name="qty" required value="{{ old('qty', $item->qty) }}">
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-success border-none" data-toggle="tooltip" data-placement="top" title="" data-original-title="Sumbit"><i class="fas fa-check"></i></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </td>
+                        <td>Rp {{ number_format( $item->price , 0, ',', '.') }}</td>
+                        <td>Rp {{ number_format( $item->subtotal , 0, ',', '.') }}</td>
+                        <td>
+                            <a href="{{ route('pos.deleteCart', $item->rowId) }}" class="btn btn-danger border-none" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa-solid fa-trash mr-0"></i></a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-4">
+                    <div class="card card-block card-stretch card-height">
+                        <div class="card-body">
+                            <p class="h4 text-primary">Quantity: {{ Cart::instance('pos')->count() }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-4">
+                    <div class="card card-block card-stretch card-height">
+                        <div class="card-body">
+                            <p class="h4 text-primary">Total: Rp {{ number_format(Cart::instance('pos')->total(), 0, ',', '.') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- <div class="container row text-center">
+                <div class="form-group col-sm-6">
+                    <p class="h4 text-primary">Quantity: {{ Cart::instance('pos')->count() }}</p>
+                </div>
+                <div class="form-group col-sm-6">
+                    <p class="h4 text-primary">Total: Rp {{ number_format(Cart::instance('pos')->total(), 0, ',', '.') }}</p>
+                </div>
+            </div> --}}
+
+            <form action="{{ route('pos.createInvoice') }}" method="POST">
+                @csrf
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="input-group mt-2">
+                            <input type="text" class="form-control" id="custnum" name="custnum" placeholder="Enter Customer Phone Number" required>
+                        </div>
+                        @error('customerid')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+                    <div class="col-md-12 mt-4">
+                        <div class="d-flex flex-wrap align-items-center justify-content-center">
+                            <a href="{{ route('customers.create') }}" class="btn btn-primary add-list mx-1">Add Customer</a>
+                            <button type="submit" class="btn btn-success add-list mx-1"{{ Cart::instance('pos')->count() == 0 ? 'disabled' : '' }}>Create Invoice</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
 @endsection

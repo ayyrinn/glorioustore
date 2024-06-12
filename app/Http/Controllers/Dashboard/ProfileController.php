@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\Customer;
 
 class ProfileController extends Controller
 {
@@ -19,8 +20,12 @@ class ProfileController extends Controller
      */
     public function show(Request $request): View
     {
+        $user = $request->user();
+        $customer = Customer::where('custemail', $user->email)->first();
+
         return view('profile.index', [
-            'user' => $request->user(),
+            'user' => $user,
+            'customer' => $customer, 
         ]);
     }
 
@@ -29,8 +34,12 @@ class ProfileController extends Controller
      */
     public function changePassword(Request $request): View
     {
+        $user = $request->user();
+        $customer = Customer::where('custemail', $user->email)->first();
+
         return view('profile.change-password', [
-            'user' => $request->user(),
+            'user' => $user,
+            'customer' => $customer, 
         ]);
     }
 
@@ -39,8 +48,12 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+        $customer = Customer::where('custemail', $user->email)->first();
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'customer' => $customer, 
         ]);
     }
 
@@ -58,7 +71,14 @@ class ProfileController extends Controller
             'username' => 'required|min:4|max:25|alpha_dash:ascii|unique:users,username,'.$user->id
         ];
 
-        $validatedData = $request->validate($rules);
+        // Rules for customer profile
+        $customerRules = [
+            'custaddress' => 'nullable|string|max:255',
+            'custnum' => 'nullable|string|max:15',
+            'custgender' => 'nullable|string|in:M,F',
+        ];
+
+        $validatedData = $request->validate($rules + $customerRules);
 
         if ($validatedData['email'] != $user->email) {
             $validatedData['email_verified_at'] = null;
@@ -75,10 +95,33 @@ class ProfileController extends Controller
             $validatedData['photo'] = $fileName;
         }
 
-        User::where('id', $user->id)->update($validatedData);
+        // Update user information
+        $user->update($validatedData);
+
+        // Update customer information if applicable
+        if ($user->hasRole('Customer')) {
+            $customer = Customer::where('custemail', $validatedData['email'])->first();
+            if ($customer) {
+                $customerData = [];
+                if (isset($validatedData['custaddress'])) {
+                    $customerData['custaddress'] = $validatedData['custaddress'];
+                }
+                if (isset($validatedData['custnum'])) {
+                    $customerData['custnum'] = $validatedData['custnum'];
+                }
+                if (isset($validatedData['custgender'])) {
+                    $customerData['custgender'] = $validatedData['custgender'];
+                }
+                if (isset($validatedData['name'])) {
+                    $customerData['custname'] = $validatedData['name'];
+                }
+                $customer->update($customerData);
+            }
+        }
 
         return Redirect::route('profile')->with('success', 'Profile has been updated!');
     }
+
 
     /**
      * Remove the specified resource from storage.

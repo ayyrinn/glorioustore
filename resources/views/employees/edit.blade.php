@@ -18,7 +18,7 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('employees.update', $employee->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('employees.update', $employee->employeeid) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('put')
                         <!-- begin: Input Image -->

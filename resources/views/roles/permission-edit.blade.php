@@ -41,6 +41,10 @@
             'name' => 'Orders'
         ],
         [
+            'slug' => 'transaction',
+            'name' => 'Transaction'
+        ],
+        [
             'slug' => 'stock',
             'name' => 'Stock'
         ],

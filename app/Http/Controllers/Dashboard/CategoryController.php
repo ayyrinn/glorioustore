@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
+use App\Models\Product;
 
 class CategoryController extends Controller
 {
@@ -50,7 +51,7 @@ class CategoryController extends Controller
         ]);
 
         $rules = [
-            'name' => 'categoryrequired|string|max:255',
+            'name' => 'required|string|max:255',
         ];
 
         $validatedData = $request->validate($rules);
@@ -88,12 +89,12 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $rules = [
-            'name' => 'categoryrequired|string|max:255'.$category->id,
+            'name' => 'required|string|max:255',
         ];
 
         $validatedData = $request->validate($rules);
 
-        Category::where('id', $category->id)->update($validatedData);
+        Category::where('categoryid', $category->categoryid)->update($validatedData);
 
         return Redirect::route('categories.index')->with('success', 'Category has been updated!');
     }
@@ -103,8 +104,9 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        Category::destroy($category->id);
+        Category::destroy($category->categoryid);
 
         return Redirect::route('categories.index')->with('success', 'Category has been deleted!');
     }
+
 }

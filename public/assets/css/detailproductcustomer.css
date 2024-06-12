@@ -1,0 +1,178 @@
+.detail-produk {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.container-7 {
+  width: 100%;
+  max-width: 1200px;
+  border-radius: 10px;
+  margin-top: -100px;
+  padding: 20px;
+}
+
+.product-details {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.product-image {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.product-image img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.product-info-harga .card {
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.product-info h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.price-section, .quantity-section {
+  margin-bottom: 20px;
+}
+
+.quantity-section span {
+  font-size: 16px;
+  font-weight: 500;
+  margin-right: 10px;
+}
+
+.quantity-input {
+  display: flex;
+  align-items: center;
+}
+
+.quantity-input button {
+  background-color: #C1272D;
+  color: #ffffff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.price-section h3 {
+  color: #C1272D;
+}
+
+.quantity-input input {
+  width: 50px;
+  text-align: center;
+  margin: 0 10px;
+}
+
+.btn-keranjang, .btnpesan button {
+  background-color: #C1272D;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.product-description .card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.product-description h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.product-description p {
+  font-size: 14px;
+  color: #495057;
+  line-height: 1.6;
+}
+
+.product-image, .product-info-harga, .product-description {
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+  background-color: #F2E9E4;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.total-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.total-section .label {
+  flex: 1;
+}
+
+.total-section .value {
+  flex: 0;
+  text-align: right;
+}
+
+
+.btn-pesan {
+  background-color: #C1272D;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.profilecustomer{
+font-size: smaller;
+margin-top: 0px;
+}
+
+.metodepembayaran{
+  font-size: smaller;
+  margin-top: 0%;
+  margin-bottom: 0%;
+}

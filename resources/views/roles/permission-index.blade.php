@@ -15,9 +15,6 @@
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                 <div>
                     <h4 class="mb-3">Permission List</h4>
-                    <p class="mb-0">A permission dashboard lets you easily gather and visualize permission data from optimizing <br>
-                        the permission experience, ensuring permission retention. </p>
-                </div>
                 <div>
                     <a href="{{ route('permission.create') }}" class="btn btn-primary add-list"><i class="fa-solid fa-plus mr-3"></i>Add Permission</a>
                 </div>
@@ -61,7 +58,7 @@
                         <tr class="ligth ligth-data">
                             <th>No.</th>
                             <th>Permission Name</th>
-                            <th>Gourp Name</th>
+                            <th>Group Name</th>
                             <th>Action</th>
                         </tr>
                     </thead>

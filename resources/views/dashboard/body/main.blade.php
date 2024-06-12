@@ -17,6 +17,56 @@
         <link rel="stylesheet" href="{{ asset('assets/vendor/remixicon/fonts/remixicon.css') }}">
 
         @yield('specificpagestyles')
+
+        <!-- Custom CSS -->
+        <style>
+            .hover-popup {
+                position: absolute;
+                left: 100%;
+                top: 50%;
+                transform: translateY(-50%);
+                background-color: #333;
+                color: #ea7a7a;
+                padding: 5px 10px;
+                border-radius: 3px;
+                white-space: nowrap;
+                z-index: 1000;
+                transition: opacity 0.3s ease;
+                opacity: 0;
+                display: none;
+            }
+
+            /* Hanya menu utama yang memiliki hover */
+            .iq-sidebar-menu .iq-menu > li:hover > a .hover-popup,
+            .iq-sidebar-menu .iq-menu > li:focus > a .hover-popup {
+                display: block;
+                opacity: 1;
+            }
+
+            /* Hanya menu utama yang memiliki latar belakang dan warna teks saat dihover atau difokus */
+            .iq-sidebar-menu .iq-menu > li:hover > a,
+            .iq-sidebar-menu .iq-menu > li:focus > a {
+                background-color: #ea7a7a;
+                color: #333;
+                border-radius: 5px;
+            }
+
+            /* Menghilangkan efek hover pada sub-menu */
+            .iq-submenu > li > a {
+                background-color: transparent;
+                color: inherit;
+            }
+
+            .iq-submenu > li > a:hover,
+            .iq-submenu > li > a:focus {
+                background-color: transparent;
+                color: inherit;
+            }
+        </style>
+
+
+
+
     </head>
 <body>
     <!-- loader Start -->
@@ -47,5 +97,19 @@
 
     <!-- App JavaScript -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
+
+    <!-- jQuery untuk efek hover -->
+    <script>
+        $(document).ready(function() {
+            $('.svg-icon').hover(
+                function() {
+                    $(this).find('.hover-popup').fadeIn(200);
+                },
+                function() {
+                    $(this).find('.hover-popup').fadeOut(200);
+                }
+            );
+        });
+    </script>
 </body>
 </html>

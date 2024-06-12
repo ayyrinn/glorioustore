@@ -10,34 +10,63 @@ class Order extends Model
 {
     use HasFactory, Sortable;
 
+    public $incrementing = false;
+    protected $primaryKey = 'orderid';
+    protected $keyType = 'string';
+
     protected $fillable = [
-        'customer_id',
-        'order_date',
-        'order_status',
-        'total_products',
-        'sub_total',
-        'vat',
-        'invoice_no',
-        'total',
-        'payment_status',
-        'pay',
-        'due',
+        'orderid',
+        'supplierid',
+        'date',
+        'status',
     ];
 
     public $sortable = [
-        'customer_id',
-        'order_date',
-        'pay',
-        'due',
-        'total',
+        'date',
+        'status',
     ];
-
-    protected $guarded = [
-        'id',
-    ];
-
-    public function customer()
+    
+    public function orderdetails()
     {
-        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+        return $this->hasMany(OrderDetails::class, 'orderid', 'orderid');
+    }
+
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class, 'supplierid', 'supplierid');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->orderid)) {
+                $model->orderid = static::generateOrderId();
+            }
+        });
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? false, function ($query, $search) {
+            return $query->whereHas('orderdetails.product', function ($query) use ($search) {
+                $query->where('productname', 'like', '%' . $search . '%');
+            });
+        });
+    }
+
+
+    public static function generateOrderId()
+    {
+        $lastOrder = static::latest('orderid')->first();
+        if (!$lastOrder) {
+            $number = 1;
+        } else {
+            $number = intval(substr($lastOrder->orderid, 2)) + 1;
+        }
+
+        return 'OR' . str_pad($number, 7, '0', STR_PAD_LEFT);
     }
 }

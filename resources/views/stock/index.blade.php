@@ -30,7 +30,7 @@
         </div>
 
         <div class="col-lg-12">
-            <form action="{{ route('order.stockManage') }}" method="get">
+            <form action="{{ route('transaction.stockManage') }}" method="get">
                 <div class="d-flex flex-wrap align-items-center justify-content-between">
                     <div class="form-group row">
                         <label for="row" class="col-sm-3 align-self-center">Row:</label>
@@ -50,7 +50,7 @@
                             <input type="text" id="search" class="form-control" name="search" placeholder="Search product" value="{{ request('search') }}">
                             <div class="input-group-append">
                                 <button type="submit" class="input-group-text bg-primary"><i class="fa-solid fa-magnifying-glass font-size-20"></i></button>
-                                <a href="{{ route('order.stockManage') }}" class="input-group-text bg-danger"><i class="fa-solid fa-trash"></i></a>
+                                <a href="{{ route('transaction.stockManage') }}" class="input-group-text bg-danger"><i class="fa-solid fa-trash"></i></a>
                             </div>
                         </div>
                     </div>
@@ -65,10 +65,9 @@
                         <tr class="ligth ligth-data">
                             <th>No.</th>
                             <th>Photo</th>
-                            <th>@sortablelink('product_name', 'name')</th>
+                            <th>@sortablelink('productname', 'name')</th>
                             <th>@sortablelink('category.name', 'category')</th>
-                            <th>@sortablelink('supplier.name', 'supplier')</th>
-                            <th>@sortablelink('selling_price', 'price')</th>
+                            <th>@sortablelink('price', 'price')</th>
                             <th>Stock</th>
                         </tr>
                     </thead>
@@ -79,12 +78,11 @@
                             <td>
                                 <img class="avatar-60 rounded" src="{{ $product->product_image ? asset('storage/products/'.$product->product_image) : asset('assets/images/product/default.webp') }}">
                             </td>
-                            <td>{{ $product->product_name }}</td>
-                            <td>{{ $product->category->name }}</td>
-                            <td>{{ $product->supplier->name }}</td>
-                            <td>${{ $product->selling_price }}</td>
+                            <td>{{ $product->productname }}</td>
+                            <td>{{ $product->category->name ?? 'No category' }}</td>
+                            <td>Rp{{ $product->price }}</td>
                             <td>
-                                <span class="btn btn-warning text-white mr-2">{{ $product->product_store }}</span>
+                                <span class="btn btn-warning text-white mr-2">{{ $product->stock }}</span>
                             </td>
                         </tr>
 

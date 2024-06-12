@@ -32,7 +32,7 @@
                         <div class="ml-3">
                             <h4 class="mb-1">{{ $employee->name }}</h4>
                             <p class="mb-2">{{ $employee->role }}</p>
-                            <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-primary font-size-14">Edit</a>
+                            <a href="{{ route('employees.edit', $employee->employeeid) }}" class="btn btn-primary font-size-14">Edit</a>
                             <a href="{{ route('employees.index') }}" class="btn btn-danger font-size-14">Back</a>
                         </div>
                     </div>

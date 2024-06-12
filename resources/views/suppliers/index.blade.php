@@ -15,8 +15,6 @@
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                 <div>
                     <h4 class="mb-3">Supplier List</h4>
-                    <p class="mb-0">A supplier dashboard lets you easily gather and visualize supplier data from optimizing <br>
-                        the supplier experience, ensuring supplier retention. </p>
                 </div>
                 <div>
                     <a href="{{ route('suppliers.create') }}" class="btn btn-primary add-list"><i class="fa-solid fa-plus mr-3"></i>Add Supplier</a>
@@ -26,12 +24,12 @@
         </div>
 
         <div class="col-lg-12">
-            <form action="{{ route('suppliers.index') }}" method="get">
+            <form id="searchForm" action="{{ route('suppliers.index') }}" method="get">
                 <div class="d-flex flex-wrap align-items-center justify-content-between">
                     <div class="form-group row">
                         <label for="row" class="col-sm-3 align-self-center">Row:</label>
                         <div class="col-sm-9">
-                            <select class="form-control" name="row">
+                            <select id="row" class="form-control" name="row">
                                 <option value="10" @if(request('row') == '10')selected="selected"@endif>10</option>
                                 <option value="25" @if(request('row') == '25')selected="selected"@endif>25</option>
                                 <option value="50" @if(request('row') == '50')selected="selected"@endif>50</option>
@@ -101,5 +99,11 @@
     </div>
     <!-- Page end  -->
 </div>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('row').addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
+    });
+</script>
 @endsection

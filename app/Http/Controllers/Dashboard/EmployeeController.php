@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Dashboard;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class EmployeeController extends Controller
 {
@@ -40,6 +40,13 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
+        $employeeid = IdGenerator::generate([
+            'table' => 'employees',
+            'field' => 'employeeid',
+            'length' => 5,
+            'prefix' => 'EM'
+        ]);
+        
         $rules = [
             'photo' => 'image|file|max:1024',
             'name' => 'required|string|max:50',
@@ -53,6 +60,8 @@ class EmployeeController extends Controller
         ];
 
         $validatedData = $request->validate($rules);
+
+        $validatedData['employeeid'] = $employeeid;
 
         /**
          * Handle upload image with Storage.
@@ -98,8 +107,8 @@ class EmployeeController extends Controller
         $rules = [
             'photo' => 'image|file|max:1024',
             'name' => 'required|string|max:50',
-            'email' => 'required|email|max:50|unique:employees,email,'.$employee->id,
-            'phone' => 'required|string|max:20|unique:employees,phone,'.$employee->id,
+            'email' => 'required|email|max:50|unique:employees,email',
+            'phone' => 'required|string|max:20|unique:employees,phone',
             'DOB' => 'date_format:Y-m-d|max:10',
             'role' => 'required|string|max:10',
             'gender' => 'string|max:1',
@@ -127,7 +136,7 @@ class EmployeeController extends Controller
             $validatedData['photo'] = $fileName;
         }
 
-        Employee::where('id', $employee->id)->update($validatedData);
+        Employee::where('employeeid', $employee->employeeid)->update($validatedData);
 
         return Redirect::route('employees.index')->with('success', 'Employee has been updated!');
     }
@@ -144,7 +153,7 @@ class EmployeeController extends Controller
             Storage::delete('public/employees/' . $employee->photo);
         }
 
-        Employee::destroy($employee->id);
+        Employee::destroy($employee->employeeid);
 
         return Redirect::route('employees.index')->with('success', 'Employee has been deleted!');
     }

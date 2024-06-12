@@ -3,7 +3,7 @@
 @section('container')
 <div class="row align-items-center" style="height: 100vh;">
   <div class="col-lg-7 col-md-6 col-12 p-0" style="height: 100vh;">
-    <img src="{{ asset('assets/images/login/01.png') }}" class="img-fluid" style="height: 100vh; width: 100%; object-fit: cover;" alt="Login Image">
+    <img src="{{ asset('assets/images/login/02.jpg') }}" class="img-fluid" style="height: 100vh; width: 100%; object-fit: cover;" alt="Login Image">
   </div>
   <div class="col-lg-5 col-md-6 col-12 d-flex align-items-center justify-content-center p-0" style="height: 100vh; background-color: white;">
     <div class="auth-card" style="width: 100%; max-width: 500px; padding: 40px;">
@@ -16,14 +16,14 @@
             <form action="{{ route('login') }}" method="POST">
               @csrf
               <div class="form-group">
-                <label for="input_type" style="text-align: left;">Nomor Telepon</label> <!-- Added style="text-align: left;" -->
+                <label for="input_type" style="text-align: left;">Username</label> <!-- Added style="text-align: left;" -->
                 <input type="text" class="form-control @error('email') is-invalid @enderror @error('username') is-invalid @enderror" 
-                       id="input_type" name="input_type" placeholder="Masukkan nomor telepon" value="{{ old('input_type') }}" required autofocus>
+                       id="input_type" name="input_type" placeholder="Masukkan username atau email" value="{{ old('input_type') }}" required autofocus>
                 @error('username')
-                <div class="text-danger small">Nomor telepon atau kata sandi yang anda masukkan salah!</div>
+                <div class="text-danger small">Username atau kata sandi yang anda masukkan salah!</div>
                 @enderror
                 @error('email')
-                <div class="text-danger small">Nomor telepon atau kata sandi yang anda masukkan salah!</div>
+                <div class="text-danger small">Username atau kata sandi yang anda masukkan salah!</div>
                 @enderror
               </div>
               <div class="form-group">
@@ -33,7 +33,7 @@
               <div class="form-group form-check d-flex justify-content-between">
                 <input type="checkbox" class="form-check-input" id="remember" name="remember">
                 <label class="form-check-label" for="remember">Ingat Saya</label>
-                <a href="#" class="text-primary">Lupa Kata Sandi?</a>
+                <a href="{{ route('password.request') }}" class="text-primary">Lupa Kata Sandi?</a>
               </div>
               <button type="submit" class="btn btn-primary btn-block" style="font-size: 1.15rem; padding: 12px;">Login</button>
               <div class="text-center mt-3">

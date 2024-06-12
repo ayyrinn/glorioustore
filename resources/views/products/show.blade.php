@@ -52,7 +52,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label>Price</label>
-                            <input type="text" class="form-control bg-white" value="{{  $product->price }}" readonly>
+                            <input type="text" class="form-control bg-white" value="Rp {{ number_format( $product->price , 0, ',', '.') }}" readonly>
                         </div>
                         <div class="form-group col-md-12">
                             <label>Description</label>

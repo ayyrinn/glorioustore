@@ -11,13 +11,13 @@ class Attendence extends Model
     use HasFactory, Sortable;
 
     protected $fillable = [
-        'employee_id',
+        'employeeid',
         'date',
         'status',
     ];
 
     public $sortable = [
-        'employee_id',
+        'employeeid',
         'date',
         'status',
     ];
@@ -31,7 +31,7 @@ class Attendence extends Model
     ];
 
     public function employee(){
-        return $this->belongsTo(Employee::class, 'employee_id', 'id');
+        return $this->belongsTo(Employee::class, 'employeeid', 'employeeid');
     }
 
     public function getRouteKeyName()
