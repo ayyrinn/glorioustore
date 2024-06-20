@@ -107,7 +107,29 @@
                     <div class="header-title">
                         <h4 class="card-title">Profit Overview</h4>
                     </div>
+                    <div class="card-header-toolbar d-flex align-items-center">
+                        <div class="dropdown">
+                            <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton002"
+                                data-toggle="dropdown">
+                                @if ($selectedPeriod === 'year')
+                                    Yearly
+                                @elseif ($selectedPeriod === 'month')
+                                    Monthly
+                                @elseif ($selectedPeriod === 'week')
+                                    Daily
+                                @endif
+                                <i class="ri-arrow-down-s-line ml-1"></i>
+                            </span>
+                            <div class="dropdown-menu dropdown-menu-right shadow-none"
+                                aria-labelledby="dropdownMenuButton002">
+                                <a class="dropdown-item" href="{{ route('dashboard', ['period' => 'year']) }}">Yearly</a>
+                                <a class="dropdown-item" href="{{ route('dashboard', ['period' => 'month']) }}">Monthly</a>
+                                <a class="dropdown-item" href="{{ route('dashboard', ['period' => 'week']) }}">Daily</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
                 <div class="card-body">
                     <div id="profit-chart" style="min-height: 360px;"></div>
                 </div>
@@ -241,36 +263,51 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var data = {!! json_encode($data) !!};
+        var profitData = {!! json_encode($profitData) !!};
 
         // ApexCharts script for profit overview
         var options = {
             chart: {
-                type: 'bar',
-                height: 360
+                type: 'line',
+                height: 360,
+                toolbar: {
+                    show: false
+                }
             },
             series: [{
-                name: 'Total Profit',
-                data: {!! json_encode($profits->pluck('total_profit')) !!}
+                name: 'Profit',
+                data: profitData.map(item => item.profit)
             }],
             xaxis: {
-                categories: {!! json_encode($profits->pluck('productname')) !!}
+                type: 'datetime',
+                categories: profitData.map(item => new Date(item.date).getTime()),
+                labels: {
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: 'MMM \'yy',
+                        day: 'dd MMM',
+                    }
+                }
+            },
+            markers: {
+                size: 6,
+                colors: ['#C11D38'],
+                strokeColors: ['#fff'],
+                strokeWidth: 2,
+                strokeOpacity: 0.9,
+                hover: {
+                    size: 8
+                }
             },
             yaxis: {
                 labels: {
                     formatter: function (val) {
-                        return "Rp " + val.toLocaleString('id-ID');
+                        return 'Rp ' + val.toLocaleString('id-ID');
                     }
                 }
             },
-            tooltip: {
-                y: {
-                    formatter: function (val) {
-                        return "Rp " + val.toLocaleString('id-ID');
-                    }
-                }
-            },
-            fill: {
+            stroke: {
+                width: 1,
                 colors: ['#C11D38']
             }
         };

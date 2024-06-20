@@ -76,7 +76,7 @@
                                 @endforeach
                                 <tr>
                                     <td colspan="6" class="text-right"><strong>Subtotal</strong></td>
-                                    <td>Rp{{ number_format($transaction->total, 0, ',', '.') }}</td>
+                                    <td>Rp{{ number_format($transaction->total - 10000, 0, ',', '.') }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="6" class="text-right"><strong>Pengiriman</strong></td>
@@ -84,7 +84,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="6" class="text-right"><strong>Total</strong></td>
-                                    <td>Rp{{ number_format($transaction->total+10000, 0, ',', '.') }}</td>
+                                    <td>Rp{{ number_format($transaction->total, 0, ',', '.') }}</td>
                                 </tr>
                             </tbody>
                         </table>

@@ -11,7 +11,7 @@ class UpgradeToHttpsUnderNgrok
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (str_ends_with($request->getHost(), '.ngrok-free.app')) {
+        if (str_ends_with($request->getHost(), '.zrok.io')) {
             URL::forceScheme('https');
         }
 

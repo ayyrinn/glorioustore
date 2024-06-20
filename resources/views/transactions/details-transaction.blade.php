@@ -66,7 +66,7 @@
                         <tr>
                             <td>{{ $loop->iteration  }}</td>
                             <td>
-                                <img class="avatar-60 rounded" src="{{ $item->product->product_image ? asset('storage/products/'.$item->product_image) : asset('assets/images/product/default.webp') }}">
+                                <img class="avatar-60 rounded" src="{{ $item->product->product_image ? asset('storage/products/'.$item->product->product_image) : asset('assets/images/product/default.webp') }}">
                             </td>
                             <td>{{ $item->product->productname }}</td>
                             <td>{{ $item->product->productid }}</td>
